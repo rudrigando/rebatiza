@@ -10,6 +10,8 @@ namespace Rebatiza
     {
         static void Main(string[] args)
         {
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
+
             var logger = new ConsoleLogger();
 
             // ===== Escolha de idioma =====
