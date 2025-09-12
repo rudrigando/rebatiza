@@ -14,105 +14,139 @@ namespace Rebatiza
 
             var logger = new ConsoleLogger();
 
-            // ===== Escolha de idioma =====
-            Console.Write("Select language / Selecione o idioma [1=English, 2=Português]: ");
-            var langChoice = Console.ReadLine()?.Trim();
-            Messages msg = langChoice == "1" ? Messages.EnUs : Messages.PtBr;
+            int exitCode = 0; // 0=ok, 1=erros operacionais, 2=exceção inesperada
+            Messages? msg = null;
+            RunResult? result = null;
 
-            // ===== Modo de execução (argumento ou prompt) =====
-            bool dryRun = args.Any(a => a.Equals("--dry-run", StringComparison.OrdinalIgnoreCase) || a.Equals("-n", StringComparison.OrdinalIgnoreCase));
-            if (!dryRun)
+            try
             {
-                Console.Write(msg.ModePrompt);
-                var modeChoice = Console.ReadLine()?.Trim();
-                dryRun = modeChoice == "2";
+                //Escolha de idioma
+                Console.Write("Select language / Selecione o idioma [1=English, 2=Português]: ");
+                var langChoice = Console.ReadLine()?.Trim();
+                msg = langChoice == "1" ? Messages.EnUs : Messages.PtBr;
+
+                //Modo de execução (argumento ou prompt)
+                bool dryRun = args.Any(a => a.Equals("--dry-run", StringComparison.OrdinalIgnoreCase) || a.Equals("-n", StringComparison.OrdinalIgnoreCase));
+                if (!dryRun)
+                {
+                    Console.Write(msg.ModePrompt);
+                    var modeChoice = Console.ReadLine()?.Trim();
+                    dryRun = modeChoice == "2";
+                }
+                logger.Info(dryRun ? msg.DryRunOn : msg.LiveRunOn);
+
+                var config = ReadConfig(logger, msg);
+                if (config is null)
+                {
+                    exitCode = 1; // entrada inválida
+                    return;
+                }
+
+                var ignoredFolders = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+                { ".git", "bin", "obj", ".vs", ".idea", ".vscode" };
+
+                var binaryExtensions = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+                { ".dll", ".exe", ".png", ".jpg", ".jpeg", ".gif", ".zip", ".ico", ".pdb", ".db", ".woff", ".woff2", ".eot", ".pdf", ".7z", ".tar", ".gz" };
+
+                var scanner = new FileSystemScanner(ignoredFolders, binaryExtensions, logger);
+                var (files, directories) = scanner.Scan(config.RootPath);
+
+                if (files.Count == 0 && directories.Count == 0)
+                {
+                    logger.Warn(msg.NothingToProcess);
+                    exitCode = 1; // nada a fazer
+                    return;
+                }
+
+                logger.Info($"\n{string.Format(msg.WillProcess, files.Count, directories.Count)}");
+                logger.Info(msg.Starting + "\n");
+
+                var progress = new ProgressBar(totalSteps: files.Count + directories.Count, logger: logger);
+                var engine = new RenameReplaceEngine(logger, msg, dryRun);
+
+                result = new RunResult();
+
+                // 1) Conteúdo + renomear arquivos
+                foreach (var file in files)
+                {
+                    try
+                    {
+                        var fileResult = engine.ProcessFile(file, config.OldText, config.NewText);
+                        result.Merge(fileResult);
+                    }
+                    catch (Exception ex)
+                    {
+                        result.Errors.Add(new ErrorDetail(msg.FileLabel, file, ex));
+                        logger.Error(string.Format(msg.FileProcessError, scanner.ToRelative(config.RootPath, file)));
+                        logger.Dim(ex.Message);
+                    }
+                    progress.Step();
+                }
+
+                // 2) Renomear pastas
+                foreach (var dir in directories.OrderByDescending(d => d.Length))
+                {
+                    try
+                    {
+                        var dirResult = engine.ProcessDirectory(dir, config.OldText, config.NewText);
+                        result.Merge(dirResult);
+                    }
+                    catch (Exception ex)
+                    {
+                        result.Errors.Add(new ErrorDetail(msg.FolderLabel, dir, ex));
+                        logger.Error(string.Format(msg.DirRenameError, scanner.ToRelative(config.RootPath, dir)));
+                        logger.Dim(ex.Message);
+                    }
+                    progress.Step();
+                }
+
+                progress.Complete();
+
+                // Resumo
+                logger.Success("\n" + (dryRun ? msg.FinishedDry : msg.Finished));
+                logger.Info($"{msg.ModeLabel} {(dryRun ? msg.DryRunWord : msg.LiveRunWord)}");
+                logger.Info($"{msg.FilesUpdated} {result.FilesContentUpdated}");
+                logger.Info($"{msg.FilesRenamed} {result.FilesRenamed}");
+                logger.Info($"{msg.DirsRenamed} {result.DirectoriesRenamed}");
+
+                if (result.Errors.Count > 0)
+                {
+                    logger.Warn($"\n{string.Format(msg.ErrorsOccurred, result.Errors.Count)}");
+                    logger.Dim(msg.ErrorDetails);
+                    foreach (var e in result.Errors.Take(50))
+                    {
+                        logger.Dim($"- [{e.Kind}] {e.Path}");
+                        logger.Dim($"  > {e.Exception.GetType().Name}: {e.Exception.Message}");
+                    }
+                    if (result.Errors.Count > 50)
+                        logger.Dim(string.Format(msg.MoreErrorsOmitted, result.Errors.Count - 50));
+
+                    exitCode = 1; // houve erros
+                }
             }
-            logger.Info(dryRun ? msg.DryRunOn : msg.LiveRunOn);
-
-            var config = ReadConfig(logger, msg);
-            if (config is null) return;
-
-            var ignoredFolders = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            { ".git", "bin", "obj", ".vs", ".idea", ".vscode" };
-
-            var binaryExtensions = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            { ".dll", ".exe", ".png", ".jpg", ".jpeg", ".gif", ".zip", ".ico", ".pdb", ".db", ".woff", ".woff2", ".eot", ".pdf", ".7z", ".tar", ".gz" };
-
-            var scanner = new FileSystemScanner(ignoredFolders, binaryExtensions, logger);
-            var (files, directories) = scanner.Scan(config.RootPath);
-
-            if (files.Count == 0 && directories.Count == 0)
+            catch (Exception ex)
             {
-                logger.Warn(msg.NothingToProcess);
-                return;
+                // Erro inesperado
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"[FATAL] {ex.GetType().Name}: {ex.Message}");
+                Console.ResetColor();
+                exitCode = 2;
             }
-
-            logger.Info($"\n{string.Format(msg.WillProcess, files.Count, directories.Count)}");
-            logger.Info(msg.Starting + "\n");
-
-            var progress = new ProgressBar(totalSteps: files.Count + directories.Count, logger: logger);
-            var engine = new RenameReplaceEngine(logger, msg, dryRun);
-
-            var result = new RunResult();
-
-            // 1) Conteúdo + renomear arquivos
-            foreach (var file in files)
+            finally
             {
-                try
-                {
-                    var fileResult = engine.ProcessFile(file, config.OldText, config.NewText);
-                    result.Merge(fileResult);
-                }
-                catch (Exception ex)
-                {
-                    result.Errors.Add(new ErrorDetail(msg.FileLabel, file, ex));
-                    logger.Error(string.Format(msg.FileProcessError, scanner.ToRelative(config.RootPath, file)));
-                    logger.Dim(ex.Message);
-                }
-                progress.Step();
-            }
+                // Mensagem final + pausa para não fechar janela
+                var pressMsg = exitCode == 0
+                    ? (msg?.PressKeyDone ?? Messages.EnUs.PressKeyDone)
+                    : (msg?.PressKeyError ?? Messages.EnUs.PressKeyError);
 
-            // 2) Renomear pastas (da mais profunda p/ a mais rasa)
-            foreach (var dir in directories.OrderByDescending(d => d.Length))
-            {
-                try
-                {
-                    var dirResult = engine.ProcessDirectory(dir, config.OldText, config.NewText);
-                    result.Merge(dirResult);
-                }
-                catch (Exception ex)
-                {
-                    result.Errors.Add(new ErrorDetail(msg.FolderLabel, dir, ex));
-                    logger.Error(string.Format(msg.DirRenameError, scanner.ToRelative(config.RootPath, dir)));
-                    logger.Dim(ex.Message);
-                }
-                progress.Step();
-            }
-
-            progress.Complete();
-
-            // Resumo
-            logger.Success("\n" + (dryRun ? msg.FinishedDry : msg.Finished));
-            logger.Info($"{msg.ModeLabel} {(dryRun ? msg.DryRunWord : msg.LiveRunWord)}");
-            logger.Info($"{msg.FilesUpdated} {result.FilesContentUpdated}");
-            logger.Info($"{msg.FilesRenamed} {result.FilesRenamed}");
-            logger.Info($"{msg.DirsRenamed} {result.DirectoriesRenamed}");
-
-            if (result.Errors.Count > 0)
-            {
-                logger.Warn($"\n{string.Format(msg.ErrorsOccurred, result.Errors.Count)}");
-                logger.Dim(msg.ErrorDetails);
-                foreach (var e in result.Errors.Take(50))
-                {
-                    logger.Dim($"- [{e.Kind}] {e.Path}");
-                    logger.Dim($"  > {e.Exception.GetType().Name}: {e.Exception.Message}");
-                }
-                if (result.Errors.Count > 50)
-                    logger.Dim(string.Format(msg.MoreErrorsOmitted, result.Errors.Count - 50));
+                Console.WriteLine();
+                Console.WriteLine(pressMsg);
+                try { Console.ReadKey(true); } catch { }
+                Environment.ExitCode = exitCode;
             }
         }
 
-        // -------------------- Config & Input --------------------
+        //Config e Input
 
         private static AppConfig? ReadConfig(ConsoleLogger logger, Messages msg)
         {
@@ -141,7 +175,7 @@ namespace Rebatiza
         }
     }
 
-    // -------------------- Idiomas --------------------
+    //Idiomas
 
     public class Messages
     {
@@ -152,7 +186,7 @@ namespace Rebatiza
         public string AskNew { get; init; } = "";
 
         // Mode
-        public string ModePrompt { get; init; } = "";       // prompt para escolher modo
+        public string ModePrompt { get; init; } = "";   
         public string DryRunOn { get; init; } = "";
         public string LiveRunOn { get; init; } = "";
         public string ModeLabel { get; init; } = "";
@@ -164,15 +198,15 @@ namespace Rebatiza
         public string Starting { get; init; } = "";
         public string Finished { get; init; } = "";
         public string FinishedDry { get; init; } = "";
-        public string WillProcess { get; init; } = ""; // {0}=files, {1}=dirs
+        public string WillProcess { get; init; } = ""; 
 
         // Summary & labels
         public string FilesUpdated { get; init; } = "";
         public string FilesRenamed { get; init; } = "";
         public string DirsRenamed { get; init; } = "";
-        public string ErrorsOccurred { get; init; } = ""; // {0}=count
+        public string ErrorsOccurred { get; init; } = "";
         public string ErrorDetails { get; init; } = "";
-        public string MoreErrorsOmitted { get; init; } = ""; // {0}=count
+        public string MoreErrorsOmitted { get; init; } = "";
         public string SkipExists { get; init; } = "";
         public string FileLabel { get; init; } = "";
         public string FolderLabel { get; init; } = "";
@@ -180,18 +214,22 @@ namespace Rebatiza
         // Errors
         public string DirNotFound { get; init; } = "";
         public string EmptyTexts { get; init; } = "";
-        public string FileProcessError { get; init; } = "";   // {0}=relative path
-        public string DirRenameError { get; init; } = "";     // {0}=relative path
+        public string FileProcessError { get; init; } = "";
+        public string DirRenameError { get; init; } = "";
 
         // Operational messages
-        public string ContentUpdated { get; init; } = "";     // {0}=file name
-        public string FileRenamed { get; init; } = "";        // {0}=old, {1}=new
-        public string FolderRenamed { get; init; } = "";      // {0}=old, {1}=new
+        public string ContentUpdated { get; init; } = "";
+        public string FileRenamed { get; init; } = "";
+        public string FolderRenamed { get; init; } = ""; 
 
         // Dry-run variants
-        public string WouldUpdateContent { get; init; } = ""; // {0}=file
-        public string WouldRenameFile { get; init; } = "";    // {0}=old, {1}=new
-        public string WouldRenameFolder { get; init; } = "";  // {0}=old, {1}=new
+        public string WouldUpdateContent { get; init; } = "";
+        public string WouldRenameFile { get; init; } = ""; 
+        public string WouldRenameFolder { get; init; } = "";
+
+        // Final prompts 
+        public string PressKeyDone { get; init; } = "";
+        public string PressKeyError { get; init; } = "";
 
         // PT-BR
         public static Messages PtBr => new Messages
@@ -235,7 +273,10 @@ namespace Rebatiza
 
             WouldUpdateContent = "[DRY-RUN] Atualizaria conteúdo: {0}",
             WouldRenameFile = "[DRY-RUN] Renomearia arquivo: {0} → {1}",
-            WouldRenameFolder = "[DRY-RUN] Renomearia pasta: {0} → {1}"
+            WouldRenameFolder = "[DRY-RUN] Renomearia pasta: {0} → {1}",
+
+            PressKeyDone = "✅ Concluído sem erros. Pressione qualquer tecla para sair...",
+            PressKeyError = "⚠️ Concluído com erros. Pressione qualquer tecla para sair..."
         };
 
         // EN-US
@@ -280,11 +321,14 @@ namespace Rebatiza
 
             WouldUpdateContent = "[DRY-RUN] Would update content: {0}",
             WouldRenameFile = "[DRY-RUN] Would rename file: {0} → {1}",
-            WouldRenameFolder = "[DRY-RUN] Would rename folder: {0} → {1}"
+            WouldRenameFolder = "[DRY-RUN] Would rename folder: {0} → {1}",
+
+            PressKeyDone = "✅ Finished with no errors. Press any key to exit...",
+            PressKeyError = "⚠️ Finished with errors. Press any key to exit..."
         };
     }
 
-    // -------------------- DTOs --------------------
+    //DTOs
 
     public record AppConfig(string RootPath, string OldText, string NewText);
 
@@ -306,7 +350,7 @@ namespace Rebatiza
 
     public record ErrorDetail(string Kind, string Path, Exception Exception);
 
-    // -------------------- Logging Colorido --------------------
+    //Logging Colorido
 
     public class ConsoleLogger
     {
@@ -326,7 +370,7 @@ namespace Rebatiza
         }
     }
 
-    // -------------------- Barra de Progresso --------------------
+    //Barra de Progresso
 
     public class ProgressBar
     {
@@ -368,7 +412,7 @@ namespace Rebatiza
         }
     }
 
-    // -------------------- Scanner --------------------
+    //Scanner
 
     public class FileSystemScanner
     {
@@ -420,7 +464,7 @@ namespace Rebatiza
         }
     }
 
-    // -------------------- Engine --------------------
+    // Engine
 
     public class RenameReplaceEngine
     {
@@ -520,11 +564,11 @@ namespace Rebatiza
         }
     }
 
-    // -------------------- Helpers --------------------
+    // Helpers 
 
     public static class StringReplaceExtensions
     {
-        // .NET < 8 compat: Replace com StringComparison
+        //Replace com StringComparison
         public static string Replace(this string str, string oldValue, string newValue, StringComparison comparison)
         {
             if (string.IsNullOrEmpty(oldValue)) return str;
