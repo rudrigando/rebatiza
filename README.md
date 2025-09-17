@@ -9,7 +9,7 @@
 ```
 
 ![Language](https://img.shields.io/badge/language-C%23-512BD4?logo=csharp)  
-![License](https://img.shields.io/badge/license-MIT-green)  
+![License](https://img.shields.io/badge/license-Proprietary-red)  
 ![Version](https://img.shields.io/badge/version-1.0.0-blue)  
 ![Platforms](https://img.shields.io/badge/platforms-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey)
 
@@ -186,7 +186,26 @@ Pastas renomeadas: 2
 
 ## 📜 Licença / License
 
-MIT License — livre para uso e adaptação / free to use and adapt  
+**PROPRIETÁRIA** — Copyright (c) 2025 Rodrigo de Freitas Oliveira  
+**Todos os direitos reservados.** Uso, modificação e distribuição proibidos sem autorização.
+
+Para uso comercial ou distribuição, contate o autor.  
+
+---
+
+## ⚖️ Aviso Legal / Legal Notice
+
+**🇧🇷 Português:**
+- Este software é propriedade exclusiva de Rodrigo de Freitas Oliveira
+- Uso apenas para fins pessoais e não comerciais
+- Proibida cópia, modificação, distribuição ou venda sem autorização
+- Violações podem resultar em ações legais
+
+**🇺🇸 English:**
+- This software is exclusive property of Rodrigo de Freitas Oliveira
+- Use only for personal and non-commercial purposes
+- Copying, modification, distribution or sale prohibited without authorization
+- Violations may result in legal action
 
 ---
 
