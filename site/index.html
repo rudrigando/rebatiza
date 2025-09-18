@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rebatiza - Rename & Replace Tool</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='%23667eea' d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z'/></svg>">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="styles/index.css" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .logo i {
+            font-size: 2rem;
+            color: #667eea;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links li {
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #667eea;
+        }
+
+        /* Footer */
+        .footer {
+            background: #333;
+            color: white;
+            padding: 3rem 0 1rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            align-items: start;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 0.8rem;
+            color: #667eea;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .footer-section p, .footer-section a {
+            color: #ccc;
+            text-decoration: none;
+            line-height: 1.4;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section a:hover {
+            color: #667eea;
+        }
+
+        .footer-section .email {
+            white-space: nowrap;
+            display: inline-block;
+            max-width: 100%;
+            overflow: visible;
+        }
+        
+        .footer-section p {
+            overflow: visible;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #555;
+            padding-top: 1rem;
+            text-align: center;
+            color: #999;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+            
+            .footer-section h3 {
+                font-size: 0.9rem;
+            }
+            
+            .footer-section p, .footer-section a {
+                font-size: 0.8rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .footer-section h3 {
+                font-size: 0.85rem;
+            }
+            
+            .footer-section p, .footer-section a {
+                font-size: 0.75rem;
+            }
+        }
+
+        /* Scroll animations */
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease-out;
+        }
+
+        .scroll-reveal.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-sync-alt"></i>
+                Rebatiza
+            </a>
+            <ul class="nav-links">
+                <li><a href="#features">Recursos</a></li>
+                <li><a href="#architecture">Arquitetura</a></li>
+                <li><a href="#tech">Tecnologias</a></li>
+                <li><a href="#usage">Como Usar</a></li>
+                <li><a href="#contact">Contato</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="container">
+                <h1>Rebatiza - Rename & Replace Tool</h1>
+                <p>Ferramenta poderosa para renomear arquivos e substituir texto em projetos inteiros</p>
+                <div class="cta-buttons">
+                    <a href="#features" class="btn btn-primary">
+                        <i class="fas fa-rocket"></i>
+                        Explorar Recursos
+                    </a>
+                    <a href="#usage" class="btn btn-secondary">
+                        <i class="fas fa-play"></i>
+                        Como Usar
+                    </a>
+                    <a href="documentacao.html" class="btn btn-outline">
+                        <i class="fas fa-book"></i>
+                        Documentação
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Section -->
+        <section class="stats">
+            <div class="container">
+                <div class="stats-grid">
+                    <div class="stat-item scroll-reveal">
+                        <div class="stat-icon">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <div class="stat-number">∞</div>
+                        <div class="stat-label">Arquivos</div>
+                    </div>
+                    <div class="stat-item scroll-reveal">
+                        <div class="stat-icon">
+                            <i class="fas fa-folder"></i>
+                        </div>
+                        <div class="stat-number">∞</div>
+                        <div class="stat-label">Pastas</div>
+                    </div>
+                    <div class="stat-item scroll-reveal">
+                        <div class="stat-icon">
+                            <i class="fas fa-language"></i>
+                        </div>
+                        <div class="stat-number">2</div>
+                        <div class="stat-label">Idiomas</div>
+                    </div>
+                    <div class="stat-item scroll-reveal">
+                        <div class="stat-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="stat-number">1</div>
+                        <div class="stat-label">Modo Seguro</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="features">
+            <div class="container">
+                <h2 class="section-title">Principais Recursos</h2>
+                <div class="features-grid">
+                    <div class="feature-card scroll-reveal">
+                        <div class="feature-icon">
+                            <i class="fas fa-sync-alt"></i>
+                        </div>
+                        <h3>Renomeação em Massa</h3>
+                        <p>Renomeie arquivos e pastas em lote, mantendo a estrutura do projeto intacta. Suporte a substituição inteligente de texto.</p>
+                    </div>
+
+                    <div class="feature-card scroll-reveal">
+                        <div class="feature-icon">
+                            <i class="fas fa-edit"></i>
+                        </div>
+                        <h3>Substituição de Conteúdo</h3>
+                        <p>Substitua texto dentro de arquivos automaticamente, incluindo nomes de classes, namespaces, comentários e strings.</p>
+                    </div>
+
+                    <div class="feature-card scroll-reveal">
+                        <div class="feature-icon">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <h3>Modo Dry-Run</h3>
+                        <p>Simule todas as operações antes de executar. Veja exatamente o que será alterado sem fazer mudanças reais.</p>
+                    </div>
+
+                    <div class="feature-card scroll-reveal">
+                        <div class="feature-icon">
+                            <i class="fas fa-filter"></i>
+                        </div>
+                        <h3>Filtros Inteligentes</h3>
+                        <p>Ignore automaticamente pastas como .git, bin, obj e arquivos binários. Processa apenas arquivos de texto relevantes.</p>
+                    </div>
+
+                    <div class="feature-card scroll-reveal">
+                        <div class="feature-icon">
+                            <i class="fas fa-globe"></i>
+                        </div>
+                        <h3>Multilíngue</h3>
+                        <p>Interface disponível em português e inglês. Mensagens de erro e logs em ambos os idiomas.</p>
+                    </div>
+
+                    <div class="feature-card scroll-reveal">
+                        <div class="feature-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3>Progresso Visual</h3>
+                        <p>Barra de progresso em tempo real mostra o status da operação. Logs coloridos para fácil identificação de problemas.</p>
+                    </div>
+
+                    <div class="feature-card scroll-reveal">
+                        <div class="feature-icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <h3>Tratamento de Erros</h3>
+                        <p>Relatórios detalhados de erros com continuação automática. Nunca perca o progresso por causa de um arquivo problemático.</p>
+                    </div>
+
+                    <div class="feature-card scroll-reveal">
+                        <div class="feature-icon">
+                            <i class="fas fa-terminal"></i>
+                        </div>
+                        <h3>Interface Console</h3>
+                        <p>Executa via linha de comando com argumentos ou modo interativo. Perfeito para automação e integração em scripts.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Architecture Section -->
+        <section id="architecture" class="architecture">
+            <div class="container">
+                <h2 class="section-title">Arquitetura da Solução</h2>
+                <div class="arch-diagram scroll-reveal">
+                    <div class="arch-layers">
+                        <div class="arch-layer">
+                            <i class="fas fa-terminal"></i>
+                            <h4>Interface Console</h4>
+                            <span>Interação com usuário, validação de entrada e apresentação de resultados</span>
+                        </div>
+                        <div class="arch-layer">
+                            <i class="fas fa-cogs"></i>
+                            <h4>Motor de Processamento</h4>
+                            <span>Lógica de renomeação, substituição de texto e gerenciamento de operações</span>
+                        </div>
+                        <div class="arch-layer">
+                            <i class="fas fa-search"></i>
+                            <h4>Scanner de Arquivos</h4>
+                            <span>Descoberta de arquivos e pastas com filtros inteligentes</span>
+                        </div>
+                        <div class="arch-layer">
+                            <i class="fas fa-file-alt"></i>
+                            <h4>Sistema de Arquivos</h4>
+                            <span>Acesso direto aos arquivos e operações de I/O</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tech Stack Section -->
+        <section id="tech" class="tech-stack">
+            <div class="container">
+                <h2 class="section-title">Stack Tecnológico</h2>
+                <div class="tech-grid">
+                    <div class="tech-item scroll-reveal">
+                        <i class="fab fa-microsoft"></i>
+                        <h4>.NET 9</h4>
+                        <p>Framework moderno da Microsoft</p>
+                    </div>
+                    <div class="tech-item scroll-reveal">
+                        <i class="fas fa-terminal"></i>
+                        <h4>Console App</h4>
+                        <p>Aplicação de linha de comando</p>
+                    </div>
+                    <div class="tech-item scroll-reveal">
+                        <i class="fas fa-code"></i>
+                        <h4>C# 12</h4>
+                        <p>Linguagem moderna e performática</p>
+                    </div>
+                    <div class="tech-item scroll-reveal">
+                        <i class="fas fa-file-alt"></i>
+                        <h4>System.IO</h4>
+                        <p>Manipulação de arquivos nativa</p>
+                    </div>
+                    <div class="tech-item scroll-reveal">
+                        <i class="fas fa-globe"></i>
+                        <h4>UTF-8</h4>
+                        <p>Suporte completo a caracteres</p>
+                    </div>
+                    <div class="tech-item scroll-reveal">
+                        <i class="fas fa-mobile-alt"></i>
+                        <h4>Cross-Platform</h4>
+                        <p>Windows, Linux e macOS</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Usage Section -->
+        <section id="usage" class="usage">
+            <div class="container">
+                <h2 class="section-title">Como Usar</h2>
+                <div class="usage-grid">
+                    <div class="usage-card scroll-reveal">
+                        <div class="usage-step">1</div>
+                        <h3>Executar o Programa</h3>
+                        <p>Execute o arquivo Rebatiza.exe ou use via dotnet run. O programa solicitará o idioma preferido.</p>
+                        <div class="code-example">
+                            <code>./ConnectSolutions.Rebatiza.exe</code>
+                        </div>
+                    </div>
+                    
+                    <div class="usage-card scroll-reveal">
+                        <div class="usage-step">2</div>
+                        <h3>Configurar Parâmetros</h3>
+                        <p>Informe a pasta raiz, texto antigo e novo texto. Escolha entre modo ao vivo ou dry-run.</p>
+                        <div class="code-example">
+                            <code>Pasta: C:\MeuProjeto<br>
+Texto antigo: OldName<br>
+Texto novo: NewName</code>
+                        </div>
+                    </div>
+                    
+                    <div class="usage-card scroll-reveal">
+                        <div class="usage-step">3</div>
+                        <h3>Processamento Automático</h3>
+                        <p>O programa escaneia arquivos, aplica mudanças e mostra progresso em tempo real com logs coloridos.</p>
+                        <div class="code-example">
+                            <code>[████████████████████] 100% (150/150)<br>
+✓ Conteúdo atualizado: Program.cs<br>
+📄 Arquivo renomeado: OldClass.cs → NewClass.cs</code>
+                        </div>
+                    </div>
+                    
+                    <div class="usage-card scroll-reveal">
+                        <div class="usage-step">4</div>
+                        <h3>Relatório Final</h3>
+                        <p>Receba um resumo completo das operações realizadas, incluindo arquivos alterados e possíveis erros.</p>
+                        <div class="code-example">
+                            <code>✅ Concluído!<br>
+Arquivos alterados: 45<br>
+Arquivos renomeados: 12<br>
+Pastas renomeadas: 3</code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer id="contact" class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Recursos</h3>
+                    <p><a href="#features">Renomeação em Massa</a></p>
+                    <p><a href="#features">Substituição de Conteúdo</a></p>
+                    <p><a href="#features">Modo Dry-Run</a></p>
+                    <p><a href="#features">Filtros Inteligentes</a></p>
+                    <p><a href="#usage">Como Usar</a></p>
+                    <p><a href="documentacao.html">Documentação</a></p>
+                </div>
+                <div class="footer-section">
+                    <h3>Licença</h3>
+                    <p><strong>Licença Proprietária</strong></p>
+                    <p>Uso interno permitido</p>
+                    <p>Distribuição proibida</p>
+                    <p>Todos os direitos reservados</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Contato</h3>
+                    <p><i class="fas fa-envelope"></i> <span class="email">rodrigo.oliveira@connectsolutions.com.br</span></p>
+                    <p><i class="fab fa-github"></i> <a href="https://github.com/rudrigando" target="_blank">GitHub Profile</a></p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Rodrigo de Freitas Oliveira - Connect Solutions. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Scroll reveal animation
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.scroll-reveal').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add active class to navigation links
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('section[id]');
+            const navLinks = document.querySelectorAll('.nav-links a');
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (scrollY >= (sectionTop - 200)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

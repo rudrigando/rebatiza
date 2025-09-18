@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentação Técnica - Rebatiza</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='%23667eea' d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z'/></svg>">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="styles/documentacao.css" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .logo i {
+            font-size: 2rem;
+            color: #667eea;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links li {
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #667eea;
+        }
+
+        /* Footer */
+        .footer {
+            background: #333;
+            color: white;
+            padding: 3rem 0 1rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            align-items: start;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 0.8rem;
+            color: #667eea;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .footer-section p, .footer-section a {
+            color: #ccc;
+            text-decoration: none;
+            line-height: 1.4;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section a:hover {
+            color: #667eea;
+        }
+
+        .footer-section .email {
+            white-space: nowrap;
+            display: inline-block;
+            max-width: 100%;
+            overflow: visible;
+        }
+        
+        .footer-section p {
+            overflow: visible;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #555;
+            padding-top: 1rem;
+            text-align: center;
+            color: #999;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+            
+            .footer-section h3 {
+                font-size: 0.9rem;
+            }
+            
+            .footer-section p, .footer-section a {
+                font-size: 0.8rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .footer-section h3 {
+                font-size: 0.85rem;
+            }
+            
+            .footer-section p, .footer-section a {
+                font-size: 0.75rem;
+            }
+        }
+
+        /* Scroll animations */
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease-out;
+        }
+
+        .scroll-reveal.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-sync-alt"></i>
+                Rebatiza
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html#features">Recursos</a></li>
+                <li><a href="index.html#architecture">Arquitetura</a></li>
+                <li><a href="index.html#tech">Tecnologias</a></li>
+                <li><a href="index.html#usage">Como Usar</a></li>
+                <li><a href="index.html#contact">Contato</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <div class="doc-header">
+                <h1>Documentação Técnica</h1>
+                <p>Guia completo para uso e integração da ferramenta Rebatiza</p>
+                <div class="doc-nav-buttons">
+                    <a href="#visao-geral" class="btn btn-primary">
+                        <i class="fas fa-eye"></i>
+                        Visão Geral
+                    </a>
+                    <a href="#arquitetura" class="btn btn-secondary">
+                        <i class="fas fa-layer-group"></i>
+                        Arquitetura
+                    </a>
+                    <a href="#exemplos" class="btn btn-outline">
+                        <i class="fas fa-code"></i>
+                        Exemplos
+                    </a>
+                </div>
+            </div>
+
+            <div class="doc-content">
+                <!-- Visão Geral -->
+                <section id="visao-geral" class="doc-section">
+                    <h2>📋 Visão Geral</h2>
+                    <p>A <strong>Rebatiza</strong> é uma ferramenta de linha de comando desenvolvida em .NET 9 para renomear arquivos, pastas e substituir texto em projetos inteiros. Projetada para ser segura, eficiente e fácil de usar.</p>
+                    
+                    <div class="info scroll-reveal">
+                        <strong>💡 Objetivo:</strong> Simplificar o processo de refatoração de projetos, permitindo renomeação em massa e substituição de texto com segurança e controle total.
+                    </div>
+                </section>
+
+                <!-- Arquitetura -->
+                <section id="arquitetura" class="doc-section">
+                    <h2>🏗️ Arquitetura da Solução</h2>
+                    <p>A solução é composta por componentes bem definidos, cada um com responsabilidade específica:</p>
+
+                    <div class="tech-grid">
+                        <div class="tech-item scroll-reveal">
+                            <i class="fas fa-terminal"></i>
+                            <h4>Program</h4>
+                            <p>Ponto de entrada da aplicação</p>
+                        </div>
+                        <div class="tech-item scroll-reveal">
+                            <i class="fas fa-comments"></i>
+                            <h4>Messages</h4>
+                            <p>Sistema de internacionalização</p>
+                        </div>
+                        <div class="tech-item scroll-reveal">
+                            <i class="fas fa-search"></i>
+                            <h4>FileSystemScanner</h4>
+                            <p>Descoberta de arquivos e pastas</p>
+                        </div>
+                        <div class="tech-item scroll-reveal">
+                            <i class="fas fa-cogs"></i>
+                            <h4>RenameReplaceEngine</h4>
+                            <p>Motor de processamento principal</p>
+                        </div>
+                        <div class="tech-item scroll-reveal">
+                            <i class="fas fa-chart-bar"></i>
+                            <h4>ProgressBar</h4>
+                            <p>Indicador visual de progresso</p>
+                        </div>
+                        <div class="tech-item scroll-reveal">
+                            <i class="fas fa-bug"></i>
+                            <h4>ConsoleLogger</h4>
+                            <p>Sistema de logging colorido</p>
+                        </div>
+                    </div>
+
+                    <h3>Estrutura do Código</h3>
+                    <div class="code-block scroll-reveal">
+<pre>Rebatiza/
+├── Program.cs              # Ponto de entrada principal
+├── Messages.cs             # Sistema de idiomas (PT-BR/EN-US)
+├── FileSystemScanner.cs    # Scanner de arquivos
+├── RenameReplaceEngine.cs  # Motor de processamento
+├── ProgressBar.cs          # Barra de progresso
+├── ConsoleLogger.cs        # Sistema de logs
+└── Helpers/                # Extensões e utilitários</pre>
+                    </div>
+                </section>
+
+                <!-- Demonstração -->
+                <section class="doc-section">
+                    <h2>🔍 Demonstração do Código</h2>
+                    
+                    <div class="info">
+                        <strong>💡 Objetivo:</strong> Esta documentação demonstra a arquitetura e implementação da ferramenta através de exemplos de código e explicações técnicas.
+                    </div>
+
+                    <h3>Configuração de Entrada</h3>
+                    <div class="code-block scroll-reveal">
+<pre>// Configuração via input do usuário
+var config = ReadConfig(logger, msg);
+
+// Parâmetros coletados:
+// - RootPath: Diretório raiz do projeto
+// - OldText: Texto a ser substituído
+// - NewText: Novo texto de substituição</pre>
+                    </div>
+
+                    <h3>Sistema de Filtros</h3>
+                    <div class="code-block scroll-reveal">
+<pre>// Pastas ignoradas automaticamente
+var ignoredFolders = new HashSet&lt;string&gt;(StringComparer.OrdinalIgnoreCase)
+{
+    ".git", "bin", "obj", ".vs", ".idea", ".vscode"
+};
+
+// Extensões de arquivos binários (não processados)
+var binaryExtensions = new HashSet&lt;string&gt;(StringComparer.OrdinalIgnoreCase)
+{
+    ".dll", ".exe", ".png", ".jpg", ".jpeg", ".gif", 
+    ".zip", ".ico", ".pdb", ".db", ".woff", ".woff2", 
+    ".eot", ".pdf", ".7z", ".tar", ".gz"
+};</pre>
+                    </div>
+                </section>
+
+                <!-- Exemplos de Uso -->
+                <section id="exemplos" class="doc-section">
+                    <h2>🔧 Exemplos de Uso</h2>
+
+                    <h3>1. Execução Básica</h3>
+                    <div class="code-block scroll-reveal">
+<pre>// Executar via linha de comando
+./ConnectSolutions.Rebatiza.exe
+
+// Ou via dotnet
+dotnet run --project ConnectSolutions.Rebatiza
+
+// Com argumento de dry-run
+./ConnectSolutions.Rebatiza.exe --dry-run</pre>
+                    </div>
+
+                    <h3>2. Fluxo de Execução</h3>
+                    <div class="code-block scroll-reveal">
+<pre>// 1. Seleção de idioma
+Select language / Selecione o idioma [1=English, 2=Português]: 2
+
+// 2. Configuração de parâmetros
+Pasta raiz (ex.: C:\Projetos\LeadIntegrator): C:\MeuProjeto
+Texto a substituir: OldCompanyName
+Novo texto: NewCompanyName
+
+// 3. Modo de execução
+Modo de execução [1=Ao vivo (altera), 2=Dry-run (simula)]: 1</pre>
+                    </div>
+
+                    <h3>3. Processamento de Arquivos</h3>
+                    <div class="code-block scroll-reveal">
+<pre>// Substituição de conteúdo
+string content = File.ReadAllText(file, Encoding.UTF8);
+if (content.Contains(oldText, StringComparison.Ordinal))
+{
+    content = content.Replace(oldText, newText, StringComparison.Ordinal);
+    File.WriteAllText(file, content, Encoding.UTF8);
+}
+
+// Renomeação de arquivos
+string fileName = Path.GetFileName(file);
+if (fileName.Contains(oldText, StringComparison.Ordinal))
+{
+    string newFileName = fileName.Replace(oldText, newText, StringComparison.Ordinal);
+    File.Move(file, newFullPath);
+}</pre>
+                    </div>
+                </section>
+
+                <!-- Principais Funcionalidades -->
+                <section class="doc-section">
+                    <h2>✨ Principais Funcionalidades</h2>
+                    
+                    <ul>
+                        <li><strong>Renomeação Inteligente:</strong> Renomeia arquivos e pastas mantendo a estrutura do projeto</li>
+                        <li><strong>Substituição de Conteúdo:</strong> Substitui texto dentro de arquivos com suporte UTF-8</li>
+                        <li><strong>Modo Dry-Run:</strong> Simula operações sem fazer alterações reais</li>
+                        <li><strong>Filtros Automáticos:</strong> Ignora pastas de build e arquivos binários automaticamente</li>
+                        <li><strong>Multilíngue:</strong> Interface em português e inglês</li>
+                        <li><strong>Progresso Visual:</strong> Barra de progresso em tempo real</li>
+                        <li><strong>Logs Coloridos:</strong> Sistema de logging com cores para fácil identificação</li>
+                        <li><strong>Tratamento de Erros:</strong> Continua processamento mesmo com erros</li>
+                        <li><strong>Relatórios Detalhados:</strong> Resumo completo das operações realizadas</li>
+                    </ul>
+
+                    <div class="highlight scroll-reveal">
+                        <strong>🎯 Destaque:</strong> A ferramenta foi projetada para ser segura e confiável, com modo dry-run para testar operações antes de aplicá-las definitivamente.
+                    </div>
+                </section>
+
+                <!-- Casos de Uso -->
+                <section class="doc-section">
+                    <h2>🎯 Casos de Uso Comuns</h2>
+                    
+                    <div class="use-case-grid">
+                        <div class="use-case-card scroll-reveal">
+                            <h4>🔄 Refatoração de Projetos</h4>
+                            <p>Renomear namespaces, classes e métodos em projetos grandes</p>
+                        </div>
+                        
+                        <div class="use-case-card scroll-reveal">
+                            <h4>🏢 Mudança de Empresa</h4>
+                            <p>Atualizar referências de nome da empresa em todo o projeto</p>
+                        </div>
+                        
+                        <div class="use-case-card scroll-reveal">
+                            <h4>📦 Migração de Pacotes</h4>
+                            <p>Substituir referências de pacotes NuGet antigos</p>
+                        </div>
+                        
+                        <div class="use-case-card scroll-reveal">
+                            <h4>🔧 Padronização</h4>
+                            <p>Padronizar convenções de nomenclatura em projetos</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Tecnologias -->
+                <section class="doc-section">
+                    <h2>🛠️ Stack Tecnológico</h2>
+                    
+                    <div class="tech-grid">
+                        <div class="tech-item">
+                            <i class="fab fa-microsoft"></i>
+                            <h4>.NET 9</h4>
+                            <p>Framework moderno da Microsoft</p>
+                        </div>
+                        <div class="tech-item">
+                            <i class="fas fa-code"></i>
+                            <h4>C# 12</h4>
+                            <p>Linguagem com recursos modernos</p>
+                        </div>
+                        <div class="tech-item">
+                            <i class="fas fa-terminal"></i>
+                            <h4>Console App</h4>
+                            <p>Aplicação de linha de comando</p>
+                        </div>
+                        <div class="tech-item">
+                            <i class="fas fa-file-alt"></i>
+                            <h4>System.IO</h4>
+                            <p>Manipulação nativa de arquivos</p>
+                        </div>
+                        <div class="tech-item">
+                            <i class="fas fa-globe"></i>
+                            <h4>UTF-8</h4>
+                            <p>Suporte completo a caracteres</p>
+                        </div>
+                        <div class="tech-item">
+                            <i class="fas fa-mobile-alt"></i>
+                            <h4>Cross-Platform</h4>
+                            <p>Windows, Linux e macOS</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Licença -->
+                <section class="doc-section">
+                    <h2>📜 Licença</h2>
+                    <p>Este projeto está protegido por <strong>Licença Proprietária</strong>. Todos os direitos reservados.</p>
+                    
+                    <div class="warning scroll-reveal">
+                        <strong>⚠️ Importante:</strong> Este software é propriedade exclusiva de Rodrigo de Freitas Oliveira e está protegido pelas leis de direitos autorais e propriedade intelectual.
+                    </div>
+
+                    <h3>Termos de Uso</h3>
+                    <ul>
+                        <li><strong>✅ Permitido:</strong> Uso interno, modificação para necessidades específicas, integração em aplicações próprias</li>
+                        <li><strong>❌ Proibido:</strong> Distribuição, revenda, cópia, engenharia reversa</li>
+                    </ul>
+
+                    <p><strong>Contato:</strong> rodrigo.oliveira@connectsolutions.com.br</p>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer id="contact" class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Recursos</h3>
+                    <p><a href="index.html#features">Renomeação em Massa</a></p>
+                    <p><a href="index.html#features">Substituição de Conteúdo</a></p>
+                    <p><a href="index.html#features">Modo Dry-Run</a></p>
+                    <p><a href="index.html#features">Filtros Inteligentes</a></p>
+                    <p><a href="index.html#usage">Como Usar</a></p>
+                    <p><a href="documentacao.html">Documentação</a></p>
+                </div>
+                <div class="footer-section">
+                    <h3>Licença</h3>
+                    <p><strong>Licença Proprietária</strong></p>
+                    <p>Uso interno permitido</p>
+                    <p>Distribuição proibida</p>
+                    <p>Todos os direitos reservados</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Contato</h3>
+                    <p><i class="fas fa-envelope"></i> <span class="email">rodrigo.oliveira@connectsolutions.com.br</span></p>
+                    <p><i class="fab fa-github"></i> <a href="https://github.com/rudrigando" target="_blank">GitHub Profile</a></p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Rodrigo de Freitas Oliveira - Connect Solutions. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Scroll reveal animation
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.scroll-reveal').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add active class to navigation links
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('section[id]');
+            const navLinks = document.querySelectorAll('.nav-links a');
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (scrollY >= (sectionTop - 200)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
