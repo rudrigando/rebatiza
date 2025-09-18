@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Documentação Técnica - Rebatiza</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='%23667eea' d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z'/></svg>">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><defs><linearGradient id='favGrad1' x1='0' y1='0' x2='1' y2='1'><stop offset='0%' stop-color='%23667eea'/><stop offset='100%' stop-color='%23764ba2'/></linearGradient><linearGradient id='favGrad2' x1='0' y1='1' x2='1' y2='0'><stop offset='0%' stop-color='%2322c55e'/><stop offset='100%' stop-color='%2306b6d4'/></linearGradient></defs><rect x='2' y='4' width='20' height='16' rx='3' fill='%230b1220' stroke='%231f2a44' stroke-width='1'/><circle cx='5' cy='7' r='1.5' fill='%23ef4444'/><circle cx='8' cy='7' r='1.5' fill='%23f59e0b'/><circle cx='11' cy='7' r='1.5' fill='%2322c55e'/><path d='M7 12 L11 13 L7 14' stroke='url(%23favGrad1)' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/><rect x='12' y='12.5' width='6' height='1' rx='0.5' fill='url(%23favGrad2)'/></svg>">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="styles/documentacao.css" rel="stylesheet">
@@ -45,6 +45,16 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .company-logo {
+            flex-shrink: 0;
         }
 
         .logo {
@@ -142,6 +152,23 @@
                 display: none;
             }
             
+            .header-brand {
+                gap: 15px;
+            }
+            
+            .company-logo {
+                width: 200px;
+                height: 25px;
+            }
+            
+            .logo {
+                font-size: 1.3rem;
+            }
+            
+            .logo i {
+                font-size: 1.5rem;
+            }
+            
             .footer-content {
                 grid-template-columns: repeat(2, 1fr);
                 gap: 1rem;
@@ -157,6 +184,27 @@
         }
         
         @media (max-width: 480px) {
+            .header-brand {
+                gap: 10px;
+            }
+            
+            .company-logo {
+                width: 160px;
+                height: 20px;
+            }
+            
+            .logo {
+                font-size: 1.1rem;
+            }
+            
+            .logo i {
+                font-size: 1.3rem;
+            }
+            
+            .container {
+                padding: 0 15px;
+            }
+            
             .footer-content {
                 grid-template-columns: 1fr;
                 gap: 1rem;
@@ -168,6 +216,25 @@
             
             .footer-section p, .footer-section a {
                 font-size: 0.75rem;
+            }
+        }
+        
+        @media (max-width: 360px) {
+            .header-brand {
+                gap: 8px;
+            }
+            
+            .company-logo {
+                width: 140px;
+                height: 18px;
+            }
+            
+            .logo {
+                font-size: 1rem;
+            }
+            
+            .logo i {
+                font-size: 1.2rem;
             }
         }
 
@@ -189,10 +256,34 @@
     <!-- Header -->
     <header class="header">
         <nav class="nav container">
-            <a href="index.html" class="logo">
-                <i class="fas fa-sync-alt"></i>
-                Rebatiza
-            </a>
+            <div class="header-brand">
+                <svg class="company-logo" xmlns="http://www.w3.org/2000/svg" width="240" height="30" viewBox="0 0 240 30">
+                    <defs>
+                        <linearGradient id="headerGrad1" x1="0" y1="0" x2="1" y2="1">
+                            <stop offset="0%" stop-color="#667eea"/>
+                            <stop offset="100%" stop-color="#764ba2"/>
+                        </linearGradient>
+                        <linearGradient id="headerGrad2" x1="0" y1="1" x2="1" y2="0">
+                            <stop offset="0%" stop-color="#22c55e"/>
+                            <stop offset="100%" stop-color="#06b6d4"/>
+                        </linearGradient>
+                    </defs>
+                    <g transform="translate(0,2)">
+                        <rect x="0" y="0" width="42" height="26" rx="6" fill="#0b1220" stroke="#1f2a44" stroke-width="1"/>
+                        <circle cx="6" cy="6" r="2.5" fill="#ef4444"/>
+                        <circle cx="12" cy="6" r="2.5" fill="#f59e0b"/>
+                        <circle cx="18" cy="6" r="2.5" fill="#22c55e"/>
+                        <path d="M11 16 L21 18 L11 20" stroke="url(#headerGrad1)" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                        <rect x="22" y="17" width="12" height="2" rx="1" fill="url(#headerGrad2)"/>
+                    </g>
+                    <text x="50" y="14" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#333">Connect</text>
+                    <text x="50" y="26" font-family="Inter, sans-serif" font-size="9" font-weight="500" fill="#666">Solutions</text>
+                </svg>
+                <a href="index.html" class="logo">
+                    <i class="fas fa-sync-alt"></i>
+                    Rebatiza
+                </a>
+            </div>
             <ul class="nav-links">
                 <li><a href="index.html#features">Recursos</a></li>
                 <li><a href="index.html#architecture">Arquitetura</a></li>
@@ -504,7 +595,7 @@ if (fileName.Contains(oldText, StringComparison.Ordinal))
                 <div class="footer-section">
                     <h3>Contato</h3>
                     <p><i class="fas fa-envelope"></i> <span class="email">rodrigo.oliveira@connectsolutions.com.br</span></p>
-                    <p><i class="fab fa-github"></i> <a href="https://github.com/rudrigando" target="_blank">GitHub Profile</a></p>
+                    <p><i class="fab fa-github"></i> <a href="https://github.com/rudrigando/rebatiza" target="_blank">GitHub</a></p>
                 </div>
             </div>
             <div class="footer-bottom">
